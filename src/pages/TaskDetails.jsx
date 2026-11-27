@@ -6,6 +6,7 @@ import SectionHeading from '../components/SectionHeading'
 import StatusBadge from '../components/StatusBadge'
 import PriorityBadge from '../components/PriorityBadge'
 import TaskForm from '../components/TaskForm'
+import { isValidDateOnly } from '../dateUtils'
 
 export default function TaskDetails() {
   const { id } = useParams()
@@ -65,7 +66,7 @@ export default function TaskDetails() {
   if (!task) return <div className="page-content"><div className="empty-state"><strong>Task not found</strong><p>{error || 'This task may have been removed.'}</p><Link className="button button-primary" to="/tasks">Back to tasks</Link></div></div>
 
   const project = projects.find((p) => String(p.id) === String(task.projectId))
-  const dueDate = task.dueDate && !Number.isNaN(Date.parse(`${task.dueDate}T12:00:00`))
+  const dueDate = isValidDateOnly(task.dueDate)
     ? new Date(`${task.dueDate}T12:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     : 'No due date'
 

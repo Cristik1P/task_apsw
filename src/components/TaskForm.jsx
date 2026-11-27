@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, Save } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { isValidDateOnly } from '../dateUtils'
 
 const blankTask = { title: '', description: '', status: 'To do', priority: 'Medium', dueDate: '', projectId: '', assignee: '' }
 
@@ -32,7 +33,7 @@ export default function TaskForm({ initialValues, projects, onSubmit, submitLabe
       setError('A task title is required.')
       return
     }
-    if (!form.dueDate || Number.isNaN(Date.parse(`${form.dueDate}T00:00:00`))) {
+    if (!isValidDateOnly(form.dueDate)) {
       setError('Please choose a due date.')
       return
     }
