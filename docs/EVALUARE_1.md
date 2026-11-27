@@ -19,6 +19,10 @@
 
 Selectorul din pagina Tasks filtrează Low, Medium și High. Căutarea, statusul și prioritatea se combină prin AND; numărătoarea folosește rezultatul filtrat; „Clear filters” resetează toate criteriile. Când nu există rezultate, este afișată starea goală.
 
+## Corecție suplimentară de flux
+
+Butonul „Add task” din detaliile proiectului transmite ID-ul proiectului în URL, iar formularul îl selectează automat. La salvare, ID-ul rămâne numeric, iar lipsa unui proiect rămâne `null` în payload.
+
 ## CRUD și navigare
 
 - Create: formularul validează titlul și data, trimite ID-ul proiectului în format numeric și redirecționează la `/tasks` după succes.
@@ -32,6 +36,7 @@ Selectorul din pagina Tasks filtrează Low, Medium și High. Căutarea, statusul
 - `git diff --check` — trecut, fără erori de spațiere.
 - `npm install` — reușit după instalarea Node.js; prima încercare a întâlnit două instalări simultane și eroarea `ENOTEMPTY`, iar reluarea într-un singur proces a trecut.
 - `npm run build` — trecut (Vite 6.4.6, 1592 module).
+- După corecția suplimentară de flux, `npm run build` — trecut din nou (Vite 6.4.6, 1592 module).
 - `git diff --check` — trecut, fără erori de spațiere.
 - `npm install` a raportat două vulnerabilități moderate și un script de instalare `esbuild` neaprobat de npm 11.
 - CRUD în interfață și verificarea navigării în browser nu au fost executate încă; necesită `npm run api` și `npm run dev` în terminale separate.
