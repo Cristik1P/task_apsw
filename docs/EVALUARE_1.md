@@ -30,11 +30,15 @@ Selectorul din pagina Tasks filtrează Low, Medium și High. Căutarea, statusul
 ## Verificări executate
 
 - `git diff --check` — trecut, fără erori de spațiere.
-- `npm install` — neexecutabil în mediul curent: comanda `npm` nu este instalată/disponibilă în PATH.
-- `npm run build`, pornirea API-ului și verificarea CRUD în browser — neexecutate din același motiv; necesită Node.js/npm, apoi `npm run api` și `npm run dev` în terminale separate.
+- `npm install` — reușit după instalarea Node.js; prima încercare a întâlnit două instalări simultane și eroarea `ENOTEMPTY`, iar reluarea într-un singur proces a trecut.
+- `npm run build` — trecut (Vite 6.4.6, 1592 module).
+- `git diff --check` — trecut, fără erori de spațiere.
+- `npm install` a raportat două vulnerabilități moderate și un script de instalare `esbuild` neaprobat de npm 11.
+- CRUD în interfață și verificarea navigării în browser nu au fost executate încă; necesită `npm run api` și `npm run dev` în terminale separate.
 
 ## Branch și Pull Request
 
 - Branch: `feature/fix-taskflow`
 - Commit-uri: `fix: repair task flows and filters`, `docs: document evaluation fixes and checks`.
-- Push către `origin` a fost respins cu HTTP 403 pentru contul GitHub autentificat (`Cristik1P`), care nu are drept de scriere în `ApaAura/task_apsw`. README-ul proiectului cere lucrul într-un fork personal; fork-ul nu este disponibil sub acest cont, iar `npm` lipsește din mediu, deci build-ul și PR-ul nu au putut fi finalizate aici.
+- Fork personal: `https://github.com/Cristik1P/task_apsw`.
+- Push către repo-ul inițial `ApaAura/task_apsw` a fost respins cu HTTP 403; branch-ul urmează să fie publicat în fork-ul personal.
