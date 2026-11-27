@@ -10,20 +10,32 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState([])
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [projectsError, setProjectsError] = useState('')
 
   useEffect(() => {
-    Promise.all([api.getTasks(), api.getProjects()])
-      .then(([taskData, projectData]) => { setTasks(taskData); setProjects(projectData) })
-      .finally(() => setLoading(false))
+    let active = true
+    Promise.allSettled([api.getTasks(), api.getProjects()])
+      .then(([taskResult, projectResult]) => {
+        if (!active) return
+        if (taskResult.status === 'fulfilled') setTasks(taskResult.value)
+        else setError('Could not load tasks. Check that the API is running.')
+        if (projectResult.status === 'fulfilled') setProjects(projectResult.value)
+        else setProjectsError('Could not load project information.')
+      })
+      .finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
   }, [])
 
-  const completed = tasks.filter((task) => task.status === 'Done').length
-  const inProgress = tasks.filter((task) => task.status === 'In Progress').length
+  const completed = tasks.filter((task) => String(task.status).toLowerCase() === 'done').length
+  const inProgress = tasks.filter((task) => String(task.status).toLowerCase() === 'in progress').length
   const completion = tasks.length ? Math.round((completed / tasks.length) * 100) : 0
 
   return (
     <div className="page-content">
-      <SectionHeading eyebrow="THURSDAY, OCTOBER 15, 2026" title="Good morning, Dana ✨" description="Here's what's happening across your workspace today." action="New task" to="/tasks/new" />
+      <SectionHeading eyebrow={new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(new Date()).toUpperCase()} title="Good morning, Dana ✨" description="Here's what's happening across your workspace today." action="New task" to="/tasks/new" />
+      {error && <div className="form-error" role="alert">{error}</div>}
+      {projectsError && <div className="form-error" role="alert">{projectsError}</div>}
       <section className="welcome-banner">
         <div className="welcome-copy"><span className="banner-kicker"><span className="sparkle-dot">✦</span> YOUR WORKSPACE AT A GLANCE</span><h2>Make progress, <em>not just plans.</em></h2><p>A little progress each day adds up to big results. Let's make today count.</p><Link to="/tasks" className="banner-link">View all tasks <ArrowRight size={15} /></Link></div>
         <div className="banner-art" aria-hidden="true"><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-card art-card-back" /><div className="art-card art-card-front"><CheckCircle2 size={25} /><span>Focus time</span><strong>02:45:18</strong><small>You're doing great!</small></div><div className="art-star star-one">✦</div><div className="art-star star-two">✳</div></div>
@@ -36,15 +48,15 @@ export default function Dashboard() {
       </section>
       <section className="dashboard-columns">
         <div className="card task-preview">
-          <div className="card-heading"><div><h3>Recent tasks</h3><p>Your latest tasks, all in one place.</p></div><Link to="/task" className="text-link">View all <ArrowRight size={14} /></Link></div>
+          <div className="card-heading"><div><h3>Recent tasks</h3><p>Your latest tasks, all in one place.</p></div><Link to="/tasks" className="text-link">View all <ArrowRight size={14} /></Link></div>
           {loading ? <div className="loading-state">Loading your tasks…</div> : <div className="task-list">
-            {tasks.slice(0, 4).map((task) => <Link to={`/tasks/${task.id}`} className="task-row" key={task.id}><div className="task-row-check"><span className={`fake-check ${task.status === 'Done' ? 'checked' : ''}`}>{task.status === 'Done' ? '✓' : ''}</span></div><div className="task-row-main"><strong>{task.title}</strong><span>{projects.find((p) => p.id === task.projectId)?.name || 'Unassigned project'}</span></div><PriorityBadge priority={task.priority} /><StatusBadge status={task.status} /></Link>)}
-            {tasks.length === 0 && <div className="empty-state">No tasks yet. Create your first task.</div>}
+            {tasks.slice(0, 4).map((task) => <Link to={`/tasks/${task.id}`} className="task-row" key={task.id}><div className="task-row-check"><span className={`fake-check ${String(task.status).toLowerCase() === 'done' ? 'checked' : ''}`}>{String(task.status).toLowerCase() === 'done' ? '✓' : ''}</span></div><div className="task-row-main"><strong>{task.title || 'Untitled task'}</strong><span>{projects.find((p) => String(p.id) === String(task.projectId))?.name || 'Unassigned project'}</span></div><PriorityBadge priority={task.priority} /><StatusBadge status={task.status} /></Link>)}
+            {tasks.length === 0 && !error && <div className="empty-state">No tasks yet. <Link to="/tasks/new">Create your first task.</Link></div>}
           </div>}
           <Link className="add-task-row" to="/tasks/new"><Plus size={16} /> Add a new task</Link>
         </div>
         <div className="right-column">
-          <div className="card progress-card"><div className="card-heading"><div><h3>Workspace progress</h3><p>A snapshot of completed work.</p></div><span className="progress-icon"><TrendingUp size={17} /></span></div><div className="progress-number">{completion}<span>%</span></div><div className="progress-track"><div className="progress-fill" style={{ width: `${completion}%` }} /></div><div className="progress-foot"><span>{completed} of {tasks.length} tasks completed</span><span className="progress-positive">Keep it up!</span></div></div>
+          <div className="card progress-card"><div className="card-heading"><div><h3>Workspace progress</h3><p>A snapshot of completed work.</p></div><span className="progress-icon"><TrendingUp size={17} /></span></div><div className="progress-number">{loading || error ? '—' : completion}<span>{loading || error ? '' : '%'}</span></div><div className="progress-track"><div className="progress-fill" style={{ width: `${loading || error ? 0 : completion}%` }} /></div><div className="progress-foot"><span>{loading || error ? 'Task progress unavailable' : `${completed} of ${tasks.length} tasks completed`}</span>{!loading && !error && <span className="progress-positive">Keep it up!</span>}</div></div>
           <div className="card tip-card"><div className="tip-icon">✦</div><div><span className="eyebrow">A LITTLE REMINDER</span><h3>One thing at a time.</h3><p>Focus on the next small step. Momentum follows clarity.</p></div></div>
         </div>
       </section>
