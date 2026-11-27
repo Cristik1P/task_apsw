@@ -41,4 +41,4 @@ Selectorul din pagina Tasks filtrează Low, Medium și High. Căutarea, statusul
 - Branch: `feature/fix-taskflow`
 - Commit-uri: `fix: repair task flows and filters`, `docs: document evaluation fixes and checks`.
 - Fork personal: `https://github.com/Cristik1P/task_apsw`.
-- Push către repo-ul inițial `ApaAura/task_apsw` a fost respins cu HTTP 403; branch-ul urmează să fie publicat în fork-ul personal.
+- Branch-ul a fost publicat în fork prin `git push -u fork feature/fix-taskflow`; push direct către repo-ul inițial `ApaAura/task_apsw` este respins cu HTTP 403.
