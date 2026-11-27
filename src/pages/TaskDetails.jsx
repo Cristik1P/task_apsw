@@ -17,10 +17,29 @@ export default function TaskDetails() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    let active = true
+    setLoading(true)
+    setTask(null)
+    setProjects([])
+    setError('')
+    setEditing(false)
+
     Promise.all([api.getTask(id), api.getProjects()])
-      .then(([taskData, projectData]) => { setTask(taskData); setProjects(projectData) })
-      .catch(() => setError('This task could not be found.'))
-      .finally(() => setLoading(false))
+      .then(([taskData, projectData]) => {
+        if (!active) return
+        setTask(taskData)
+        setProjects(projectData)
+      })
+      .catch(() => {
+        if (!active) return
+        setTask(null)
+        setError('This task could not be found.')
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => { active = false }
   }, [id])
 
   async function updateTask(form) {
