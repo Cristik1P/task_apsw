@@ -29,6 +29,10 @@ Butonul „Add task” din detaliile proiectului transmite ID-ul proiectului în
 - Lista Tasks păstrează sarcinile dacă API-ul Projects eșuează, normalizează ID-urile proiectelor și nu presupune status/date valide pentru randarea indicatorilor.
 - Dashboard-ul și sumarizările tratează în siguranță statusurile lipsă, normalizează statusul „Done” și afișează erori separate pentru sarcini și proiecte.
 - Badge-urile de status și prioritate afișează fallback-uri lizibile pentru valori lipsă.
+- Dashboard-ul nu mai afișează eșecul de încărcare ca și cum spațiul de lucru ar fi gol; mesajul „No tasks yet” apare doar când API-ul a răspuns cu o listă goală.
+- Starea fără sarcini din pagina Tasks oferă acțiunea de creare, iar starea fără rezultate păstrează acțiunea de curățare a filtrelor.
+- Detaliile sarcinii afișează un fallback pentru date lipsă și nu mai navighează la un URL de proiect invalid pentru sarcinile neasociate.
+- Statusurile cu majuscule diferite au stil și indicator de completare coerente în badge-uri, Dashboard și lista de sarcini.
 
 ## CRUD și navigare
 

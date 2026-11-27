@@ -5,6 +5,7 @@ export default function StatusBadge({ status }) {
     'Review': ['status-review', 'In review'],
     'Done': ['status-done', 'Done'],
   }
-  const [className, label] = map[status] || ['status-todo', status || 'Unknown status']
+  const normalizedStatus = String(status || '').toLocaleLowerCase()
+  const [className, label] = map[Object.keys(map).find((key) => key.toLocaleLowerCase() === normalizedStatus)] || ['status-todo', status || 'Unknown status']
   return <span className={`status-badge ${className}`}><span className="status-dot" />{label}</span>
 }
