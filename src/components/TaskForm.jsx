@@ -1,19 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, Save } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-const blankTask = { title: '', description: '', status: 'To do', priority: 'Medium', dueDate: '', projectId: '1', assignee: '' }
+const blankTask = { title: '', description: '', status: 'To do', priority: 'Medium', dueDate: '', projectId: '', assignee: '' }
 
 export default function TaskForm({ initialValues, projects, onSubmit, submitLabel = 'Create task' }) {
   const [form, setForm] = useState({ ...blankTask, ...initialValues })
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const projectTouched = useRef(false)
 
   useEffect(() => {
-    setForm({ ...blankTask, ...initialValues, projectId: String(initialValues?.projectId ?? projects[0]?.id ?? '') })
+    projectTouched.current = false
+    setForm({ ...blankTask, ...initialValues, projectId: String(initialValues?.projectId ?? '') })
+  }, [initialValues])
+
+  useEffect(() => {
+    if (!initialValues?.projectId && projects.length && !projectTouched.current) {
+      setForm((current) => current.projectId ? current : { ...current, projectId: String(projects[0].id) })
+    }
   }, [initialValues, projects])
 
   function update(event) {
+    if (event.target.name === 'projectId') projectTouched.current = true
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }))
   }
 

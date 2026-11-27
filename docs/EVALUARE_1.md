@@ -33,6 +33,7 @@ Butonul „Add task” din detaliile proiectului transmite ID-ul proiectului în
 - Starea fără sarcini din pagina Tasks oferă acțiunea de creare, iar starea fără rezultate păstrează acțiunea de curățare a filtrelor.
 - Detaliile sarcinii afișează un fallback pentru date lipsă și nu mai navighează la un URL de proiect invalid pentru sarcinile neasociate.
 - Statusurile cu majuscule diferite au stil și indicator de completare coerente în badge-uri, Dashboard și lista de sarcini.
+- Formularul de creare nu mai resetează câmpurile când lista de proiecte se încarcă; proiectul implicit se selectează fără să suprascrie alegerea utilizatorului.
 
 ## CRUD și navigare
 
