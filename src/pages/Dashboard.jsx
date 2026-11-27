@@ -56,7 +56,7 @@ export default function Dashboard() {
           <Link className="add-task-row" to="/tasks/new"><Plus size={16} /> Add a new task</Link>
         </div>
         <div className="right-column">
-          <div className="card progress-card"><div className="card-heading"><div><h3>Workspace progress</h3><p>A snapshot of completed work.</p></div><span className="progress-icon"><TrendingUp size={17} /></span></div><div className="progress-number">{completion}<span>%</span></div><div className="progress-track"><div className="progress-fill" style={{ width: `${completion}%` }} /></div><div className="progress-foot"><span>{completed} of {tasks.length} tasks completed</span><span className="progress-positive">Keep it up!</span></div></div>
+          <div className="card progress-card"><div className="card-heading"><div><h3>Workspace progress</h3><p>A snapshot of completed work.</p></div><span className="progress-icon"><TrendingUp size={17} /></span></div><div className="progress-number">{loading || error ? '—' : completion}<span>{loading || error ? '' : '%'}</span></div><div className="progress-track"><div className="progress-fill" style={{ width: `${loading || error ? 0 : completion}%` }} /></div><div className="progress-foot"><span>{loading || error ? 'Task progress unavailable' : `${completed} of ${tasks.length} tasks completed`}</span>{!loading && !error && <span className="progress-positive">Keep it up!</span>}</div></div>
           <div className="card tip-card"><div className="tip-icon">✦</div><div><span className="eyebrow">A LITTLE REMINDER</span><h3>One thing at a time.</h3><p>Focus on the next small step. Momentum follows clarity.</p></div></div>
         </div>
       </section>

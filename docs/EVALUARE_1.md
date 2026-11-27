@@ -34,6 +34,7 @@ Butonul „Add task” din detaliile proiectului transmite ID-ul proiectului în
 - Detaliile sarcinii afișează un fallback pentru date lipsă și nu mai navighează la un URL de proiect invalid pentru sarcinile neasociate.
 - Statusurile cu majuscule diferite au stil și indicator de completare coerente în badge-uri, Dashboard și lista de sarcini.
 - Formularul de creare nu mai resetează câmpurile când lista de proiecte se încarcă; proiectul implicit se selectează fără să suprascrie alegerea utilizatorului.
+- Indicatorul de progres din Dashboard nu mai raportează 0% atunci când încărcarea sarcinilor a eșuat sau este în curs; afișează starea indisponibilă până când datele pot fi calculate.
 
 ## CRUD și navigare
 
