@@ -15,6 +15,7 @@ export default function TaskDetails() {
   const [editing, setEditing] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [projectError, setProjectError] = useState('')
 
   useEffect(() => {
     let active = true
@@ -22,18 +23,16 @@ export default function TaskDetails() {
     setTask(null)
     setProjects([])
     setError('')
+    setProjectError('')
     setEditing(false)
 
-    Promise.all([api.getTask(id), api.getProjects()])
-      .then(([taskData, projectData]) => {
+    Promise.allSettled([api.getTask(id), api.getProjects()])
+      .then(([taskResult, projectResult]) => {
         if (!active) return
-        setTask(taskData)
-        setProjects(projectData)
-      })
-      .catch(() => {
-        if (!active) return
-        setTask(null)
-        setError('This task could not be found.')
+        if (taskResult.status === 'fulfilled') setTask(taskResult.value)
+        else setError('This task could not be found or loaded.')
+        if (projectResult.status === 'fulfilled') setProjects(projectResult.value)
+        else setProjectError('Project information could not be loaded.')
       })
       .finally(() => {
         if (active) setLoading(false)
@@ -70,7 +69,7 @@ export default function TaskDetails() {
   return <div className="page-content">
     <Link to="/tasks" className="back-link"><ArrowLeft size={15} /> All tasks</Link>
     <SectionHeading eyebrow={project?.name || 'TASK DETAILS'} title={editing ? 'Edit task' : task.title} description={editing ? 'Update the task details below.' : task.description || 'No description has been added yet.'} />
-    {error && <div className="form-error" role="alert">{error}</div>}
+    {(error || projectError) && <div className="form-error" role="alert">{error || projectError}</div>}
     {editing ? <TaskForm initialValues={task} projects={projects} onSubmit={updateTask} submitLabel="Save changes" /> : <div className="detail-layout"><div className="card detail-main"><div className="detail-label">OVERVIEW</div><div className="detail-status-row"><StatusBadge status={task.status} /><PriorityBadge priority={task.priority} /></div><div className="detail-description">{task.description || 'No description has been added yet.'}</div><div className="detail-divider" /><div className="detail-meta-grid"><div className="detail-meta"><CalendarDays size={17} /><div><span>Due date</span><strong>{new Date(`${task.dueDate}T12:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></div></div><div className="detail-meta"><CircleUserRound size={17} /><div><span>Assignee</span><strong>{task.assignee || 'Unassigned'}</strong></div></div></div></div><div className="card detail-actions"><h3>Manage task</h3><p>Keep information up to date as work progresses.</p><button className="button button-secondary full-button" onClick={() => setEditing(true)}><Edit3 size={16} />Edit task</button><button className="button button-danger full-button" onClick={deleteTask}><Trash2 size={16} />Delete task</button><div className="detail-project-link"><span>PROJECT</span><Link to={`/projects/${project?.id || ''}`}>{project?.name || 'No project'} <span>↗</span></Link></div></div></div>}
   </div>
 }
