@@ -1,5 +1,6 @@
 import { Flag } from 'lucide-react'
 
 export default function PriorityBadge({ priority }) {
-  return <span className={`priority priority-${String(priority).toLowerCase()}`}><Flag size={13} />{priority}</span>
+  const label = priority || 'Unspecified'
+  return <span className={`priority priority-${String(label).toLowerCase()}`}><Flag size={13} />{label}</span>
 }

@@ -5,6 +5,6 @@ export default function StatusBadge({ status }) {
     'Review': ['status-review', 'In review'],
     'Done': ['status-done', 'Done'],
   }
-  const [className, label] = map[status] || ['status-todo', status]
+  const [className, label] = map[status] || ['status-todo', status || 'Unknown status']
   return <span className={`status-badge ${className}`}><span className="status-dot" />{label}</span>
 }

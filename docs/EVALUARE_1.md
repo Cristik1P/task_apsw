@@ -23,6 +23,13 @@ Selectorul din pagina Tasks filtrează Low, Medium și High. Căutarea, statusul
 
 Butonul „Add task” din detaliile proiectului transmite ID-ul proiectului în URL, iar formularul îl selectează automat. La salvare, ID-ul rămâne numeric, iar lipsa unui proiect rămâne `null` în payload.
 
+## Remedieri suplimentare după evaluarea inițială
+
+- Încărcarea proiectelor și sarcinilor din meniul lateral, Dashboard și lista Tasks este independentă: o eroare pe una dintre resurse nu mai ascunde datele disponibile din cealaltă.
+- Lista Tasks păstrează sarcinile dacă API-ul Projects eșuează, normalizează ID-urile proiectelor și nu presupune status/date valide pentru randarea indicatorilor.
+- Dashboard-ul și sumarizările tratează în siguranță statusurile lipsă, normalizează statusul „Done” și afișează erori separate pentru sarcini și proiecte.
+- Badge-urile de status și prioritate afișează fallback-uri lizibile pentru valori lipsă.
+
 ## CRUD și navigare
 
 - Create: formularul validează titlul și data, trimite ID-ul proiectului în format numeric și redirecționează la `/tasks` după succes.

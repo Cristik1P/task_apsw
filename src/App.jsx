@@ -15,9 +15,12 @@ export default function App() {
   const [apiError, setApiError] = useState(false)
 
   useEffect(() => {
-    const loadWorkspace = () => Promise.all([api.getProjects(), api.getTasks()])
-      .then(([projectData, taskData]) => { setProjects(projectData); setTaskCount(taskData.length); setApiError(false) })
-      .catch(() => setApiError(true))
+    const loadWorkspace = () => Promise.allSettled([api.getProjects(), api.getTasks()])
+      .then(([projectResult, taskResult]) => {
+        if (projectResult.status === 'fulfilled') setProjects(projectResult.value)
+        if (taskResult.status === 'fulfilled') setTaskCount(taskResult.value.length)
+        setApiError(projectResult.status === 'rejected' || taskResult.status === 'rejected')
+      })
     loadWorkspace()
     window.addEventListener('tasks:changed', loadWorkspace)
     return () => window.removeEventListener('tasks:changed', loadWorkspace)
