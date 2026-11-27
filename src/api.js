@@ -15,9 +15,21 @@ async function request(path, options = {}) {
 export const api = {
   getTasks: () => request('/tasks?_sort=dueDate'),
   getTask: (id) => request(`/tasks/${id}`),
-  createTask: (task) => request('/tasks', { method: 'POST', body: JSON.stringify(task) }),
-  updateTask: (id, task) => request(`/tasks/${id}`, { method: 'PATCH', body: JSON.stringify(task) }),
-  deleteTask: (id) => request(`/tasks/${id}`, { method: 'DELETE' }),
+  createTask: async (task) => {
+    const created = await request('/tasks', { method: 'POST', body: JSON.stringify(task) })
+    window.dispatchEvent(new Event('tasks:changed'))
+    return created
+  },
+  updateTask: async (id, task) => {
+    const updated = await request(`/tasks/${id}`, { method: 'PATCH', body: JSON.stringify(task) })
+    window.dispatchEvent(new Event('tasks:changed'))
+    return updated
+  },
+  deleteTask: async (id) => {
+    const deleted = await request(`/tasks/${id}`, { method: 'DELETE' })
+    window.dispatchEvent(new Event('tasks:changed'))
+    return deleted
+  },
   getProjects: () => request('/projects'),
   getProject: (id) => request(`/projects/${id}`),
 }

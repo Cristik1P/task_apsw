@@ -23,10 +23,10 @@ export default function Tasks() {
   }, [])
 
   const filteredTasks = useMemo(() => tasks.filter((task) => {
-    const query = search.toLowerCase()
-    const matchesSearch = task.title.toLowerCase().includes(query) || task.assignee.includes(search)
-    const matchesStatus = status === 'All status' || task.status === (status === 'In progress' ? 'In Progress' : status)
-    const matchesPriority = priority === 'All priorities' || task.priority === priority
+    const query = search.trim().toLocaleLowerCase()
+    const matchesSearch = String(task.title || '').toLocaleLowerCase().includes(query) || String(task.assignee || '').toLocaleLowerCase().includes(query)
+    const matchesStatus = status === 'All status' || String(task.status).toLocaleLowerCase() === status.toLocaleLowerCase()
+    const matchesPriority = priority === 'All priorities' || String(task.priority).toLocaleLowerCase() === priority.toLocaleLowerCase()
     return matchesSearch && matchesStatus && matchesPriority
   }), [tasks, search, status, priority])
 
@@ -38,7 +38,7 @@ export default function Tasks() {
         <div className="task-toolbar">
           <div className="search-wrap"><Search size={17} /><input aria-label="Search tasks" placeholder="Search tasks or people..." value={search} onChange={(e) => setSearch(e.target.value)} /></div>
           <div className="filter-wrap"><SlidersHorizontal size={16} /><select aria-label="Filter by status" value={status} onChange={(e) => setStatus(e.target.value)}><option>All status</option><option>To do</option><option>In progress</option><option>Review</option><option>Done</option></select></div>
-          {/* The priority filter is intentionally not part of the starter requirements. */}
+          <div className="filter-wrap"><SlidersHorizontal size={16} /><select aria-label="Filter by priority" value={priority} onChange={(e) => setPriority(e.target.value)}><option>All priorities</option><option>Low</option><option>Medium</option><option>High</option></select></div>
         </div>
         {error && <div className="form-error">{error}</div>}
         {loading ? <div className="loading-state">Loading tasks…</div> : <div className="table-wrap"><table className="tasks-table"><thead><tr><th>Task name</th><th>Assignee</th><th>Due date</th><th>Priority</th><th>Status</th><th><span className="sr-only">Open</span></th></tr></thead><tbody>

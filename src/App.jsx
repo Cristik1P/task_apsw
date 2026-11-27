@@ -11,10 +11,16 @@ import { api } from './api'
 
 export default function App() {
   const [projects, setProjects] = useState([])
+  const [taskCount, setTaskCount] = useState(0)
   const [apiError, setApiError] = useState(false)
 
   useEffect(() => {
-    api.getProjects().then(setProjects).catch(() => setApiError(true))
+    const loadWorkspace = () => Promise.all([api.getProjects(), api.getTasks()])
+      .then(([projectData, taskData]) => { setProjects(projectData); setTaskCount(taskData.length); setApiError(false) })
+      .catch(() => setApiError(true))
+    loadWorkspace()
+    window.addEventListener('tasks:changed', loadWorkspace)
+    return () => window.removeEventListener('tasks:changed', loadWorkspace)
   }, [])
 
   const navItems = [
@@ -40,7 +46,7 @@ export default function App() {
           {navItems.map(({ to, label, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               <Icon size={18} /><span>{label}</span>
-              {label === 'Tasks' && <span className="nav-count">7</span>}
+              {label === 'Tasks' && <span className="nav-count">{taskCount}</span>}
             </NavLink>
           ))}
         </nav>
@@ -72,7 +78,7 @@ export default function App() {
         {apiError && <div className="api-warning">Could not connect to the local API. Start it with <code>npm run api</code>.</div>}
         <header className="topbar">
           <div className="breadcrumbs"><span>Workspace</span><span className="crumb-slash">/</span><strong>My workspace</strong></div>
-          <div className="topbar-actions"><span className="today-label">Thursday, October 15</span><div className="top-avatar">DP</div></div>
+          <div className="topbar-actions"><time className="today-label" dateTime={new Date().toISOString().slice(0, 10)}>{new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(new Date())}</time><div className="top-avatar">DP</div></div>
         </header>
         <div className="page-wrap">
           <Routes>
